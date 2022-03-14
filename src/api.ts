@@ -1,7 +1,7 @@
 const API_KEY = 'be8d010a201fdfcf2c469ea542aac0d1';
 const BASE_PATH = 'https://api.themoviedb.org/3';
 
-interface IMovie {
+export interface IMovie {
 	adult: boolean;
 	backdrop_path: string;
 	genre_ids: [];
@@ -29,8 +29,26 @@ export interface IGetMovieResult {
 	total_results: number;
 }
 
-export function getMovies() {
+export function getMoviesNowPlaying() {
 	return fetch(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}`).then(
+		(response) => response.json()
+	);
+}
+
+export function getMoviesPopular() {
+	return fetch(`${BASE_PATH}/movie/popular?api_key=${API_KEY}`).then(
+		(response) => response.json()
+	);
+}
+
+export function getMoviesTop() {
+	return fetch(`${BASE_PATH}/movie/top_rated?api_key=${API_KEY}`).then(
+		(response) => response.json()
+	);
+}
+
+export function getMoviesUpcoming() {
+	return fetch(`${BASE_PATH}/movie/upcoming?api_key=${API_KEY}`).then(
 		(response) => response.json()
 	);
 }
