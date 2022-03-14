@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { RecoilRoot } from 'recoil';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import App from './App';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { theme } from './theme';
 
 const GlobalStyle = createGlobalStyle`
@@ -38,6 +39,9 @@ footer, header, hgroup, main, menu, nav, section {
 body {
   line-height: 1;
   font-family: 'Noto Sans KR', sans-serif;
+  background-color: ${(props) => props.theme.black.darker};
+  color: ${(props) => props.theme.white.light};
+  overflow-x: hidden;
 }
 menu, ol, ul {
   list-style: none;
@@ -66,13 +70,17 @@ button {
 }
 `;
 
+const client = new QueryClient();
+
 ReactDOM.render(
 	<React.StrictMode>
 		<RecoilRoot>
-			<ThemeProvider theme={theme}>
-				<GlobalStyle />
-				<App />
-			</ThemeProvider>
+			<QueryClientProvider client={client}>
+				<ThemeProvider theme={theme}>
+					<GlobalStyle />
+					<App />
+				</ThemeProvider>
+			</QueryClientProvider>
 		</RecoilRoot>
 	</React.StrictMode>,
 	document.getElementById('root')
