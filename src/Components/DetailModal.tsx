@@ -1,5 +1,4 @@
 import { motion, useTransform, useViewportScroll } from 'framer-motion';
-import { useMatch } from 'react-router-dom';
 import styled from 'styled-components';
 import { makeImagePath } from '../utils';
 
@@ -48,7 +47,6 @@ interface IModalProps {
 }
 
 function DetailModal({ id, title, overview, bgImg, type }: IModalProps) {
-	console.log(id, title, overview, bgImg);
 	const { scrollY } = useViewportScroll();
 	const transformScrollY = useTransform(scrollY, (value) => value + 50);
 	return (

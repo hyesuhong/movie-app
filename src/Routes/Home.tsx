@@ -10,7 +10,7 @@ import {
 	IGetMovieResult,
 } from '../api';
 import DetailModal from '../Components/DetailModal';
-import Slider from '../Components/Slider';
+import Slider from '../Components/MovieSlider';
 import { makeImagePath } from '../utils';
 
 const Wrapper = styled.div`
