@@ -46,6 +46,23 @@ export interface IGetTvShowResult {
 	total_pages: number;
 }
 
+export interface IPerson {
+	profile_path: string;
+	adult: boolean;
+	id: number;
+	media_type: string;
+	known_for: IMovie[] | ITvShow[];
+	name: string;
+	popularity: number;
+}
+
+export interface IGetSearchResult {
+	page: number;
+	results: IMovie[] | ITvShow[] | IPerson[];
+	total_results: number;
+	total_pages: number;
+}
+
 export function getMoviesNowPlaying() {
 	return fetch(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}`).then(
 		(response) => response.json()
@@ -100,4 +117,8 @@ export function getTvShowsTop() {
 	);
 }
 
-// https://api.themoviedb.org/3/search/multi?api_key=<<api_key>>&language=en-US&page=1&include_adult=false
+export function searchContent(search: string) {
+	return fetch(
+		`${BASE_PATH}/search/multi?api_key=${API_KEY}&query=${search}`
+	).then((response) => response.json());
+}

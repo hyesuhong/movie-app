@@ -4,10 +4,6 @@ import Home from './Routes/Home';
 import Search from './Routes/Search';
 import Tv from './Routes/Tv';
 
-/*
-<Route path='/:coinId/*' element={<Coin />}></Route>
-				<Route path='/' element={<Coins />}></Route>
-*/
 function App() {
 	return (
 		<Router basename={process.env.PUBLIC_URL}>
