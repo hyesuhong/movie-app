@@ -46,19 +46,20 @@ export interface IGetTvShowResult {
 	total_pages: number;
 }
 
-export interface IPerson {
-	profile_path: string;
-	adult: boolean;
+export interface ISearch {
+	profile_path?: string;
+	backdrop_path?: string;
+	poster_path?: string;
 	id: number;
 	media_type: string;
-	known_for: IMovie[] | ITvShow[];
-	name: string;
-	popularity: number;
+	name?: string;
+	title?: string;
+	overview?: string;
 }
 
 export interface IGetSearchResult {
 	page: number;
-	results: IMovie[] | ITvShow[] | IPerson[];
+	results: ISearch[];
 	total_results: number;
 	total_pages: number;
 }
