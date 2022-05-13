@@ -9,7 +9,7 @@ import {
 	getMoviesUpcoming,
 	IGetMovieResult,
 } from '../api';
-import DetailModal from '../Components/DetailModal';
+import MovieModal from '../Components/MovieModal';
 import Slider from '../Components/MovieSlider';
 import { makeImagePath } from '../utils';
 
@@ -152,7 +152,7 @@ function Home() {
 									animate={{ opacity: 1 }}
 								/>
 								{clickedMovie && (
-									<DetailModal
+									<MovieModal
 										id={clickedMovie.id}
 										title={clickedMovie.title}
 										overview={clickedMovie.overview}

@@ -123,3 +123,15 @@ export function searchContent(search: string) {
 		`${BASE_PATH}/search/multi?api_key=${API_KEY}&query=${search}`
 	).then((response) => response.json());
 }
+
+export function getMovieDetail(id: number) {
+	return fetch(`${BASE_PATH}/movie/${id}?api_key=${API_KEY}`).then((response) =>
+		response.json()
+	);
+}
+
+export function getTvDetail(id: number) {
+	return fetch(`${BASE_PATH}/tv/${id}?api_key=${API_KEY}`).then((response) =>
+		response.json()
+	);
+}
