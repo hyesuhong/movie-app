@@ -169,9 +169,19 @@ function Slider({ movies, title }: ISliderProps) {
 	};
 	const toggleLeaving = () => setLeaving((prev) => !prev);
 
+	function changeTitle(title: string) {
+		const upperCase = title.match(/[A-Z]/g);
+		let result = title;
+		if (upperCase !== null) {
+			result = title.replace(upperCase[0], ' ' + upperCase[0]);
+		}
+		result = result[0].toUpperCase() + result.slice(1, result.length);
+		return result;
+	}
+
 	return (
 		<Container>
-			<SectionTitle>{title}</SectionTitle>
+			<SectionTitle>{changeTitle(title)}</SectionTitle>
 			<SliderBtn direction='prev' onClick={decreasIndex} />
 			<SliderBtn direction='next' onClick={increaseIndex} />
 			<Wrapper>

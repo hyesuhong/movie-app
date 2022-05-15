@@ -2,7 +2,7 @@ import { motion, useTransform, useViewportScroll } from 'framer-motion';
 import { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
-import { getMovieDetail, IMovie } from '../api';
+import { getTvDetail, ITvShow } from '../api';
 import { makeImagePath } from '../utils';
 
 const ModalContainer = styled(motion.div)`
@@ -99,9 +99,9 @@ interface IModalProps {
 	type: string;
 }
 
-function DetailModal({ id, title, overview, bgImg, type }: IModalProps) {
-	const { data, isLoading } = useQuery<IMovie>('detail', () =>
-		getMovieDetail(id)
+function TvModal({ id, title, overview, bgImg, type }: IModalProps) {
+	const { data, isLoading } = useQuery<ITvShow>('detail', () =>
+		getTvDetail(id)
 	);
 
 	useEffect(() => console.log(data), [data]);
@@ -132,12 +132,12 @@ function DetailModal({ id, title, overview, bgImg, type }: IModalProps) {
 						<div>
 							<img
 								src={makeImagePath(data ? data.backdrop_path : '', 'w500')}
-								alt={data ? data.original_title : title}
+								alt={data ? data.name : title}
 							/>
 						</div>
 					</ModalCover>
 					<ModalDesc>
-						<ModalTitle>{data ? data.original_title : title}</ModalTitle>
+						<ModalTitle>{data ? data.name : title}</ModalTitle>
 						<ModalExtraDesc>
 							<ul data-info='Genres'>
 								{data
@@ -158,4 +158,4 @@ function DetailModal({ id, title, overview, bgImg, type }: IModalProps) {
 	);
 }
 
-export default DetailModal;
+export default TvModal;

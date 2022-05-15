@@ -4,7 +4,12 @@ const BASE_PATH = 'https://api.themoviedb.org/3';
 export interface IMovie {
 	adult: boolean;
 	backdrop_path: string;
-	genre_ids: [];
+	genres: [
+		{
+			id: number;
+			name: string;
+		}
+	];
 	id: number;
 	original_language: string;
 	original_title: string;
@@ -37,6 +42,13 @@ export interface ITvShow {
 	poster_path: string;
 	name: string;
 	overview: string;
+	genres: [
+		{
+			id: number;
+			name: string;
+		}
+	];
+	original_language: string;
 }
 
 export interface IGetTvShowResult {

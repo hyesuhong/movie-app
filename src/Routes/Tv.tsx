@@ -11,7 +11,7 @@ import {
 	IGetTvShowResult,
 	ITvShow,
 } from '../api';
-import DetailModal from '../Components/DetailModal';
+import TvModal from '../Components/TvModal';
 import Slider from '../Components/TvSlider';
 import { makeImagePath } from '../utils';
 
@@ -157,7 +157,7 @@ function Tv() {
 									animate={{ opacity: 1 }}
 								/>
 								{clickedShow && (
-									<DetailModal
+									<TvModal
 										id={clickedShow.id}
 										title={clickedShow.name}
 										overview={clickedShow.overview}
