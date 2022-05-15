@@ -1,3 +1,5 @@
 export function makeImagePath(id: string, format?: string) {
-	return `https://image.tmdb.org/t/p/${format ? format : 'original'}/${id}`;
+	return id === '' || id === null
+		? '/movie_app_v2/empty_img.svg'
+		: `https://image.tmdb.org/t/p/${format ? format : 'original'}/${id}`;
 }
