@@ -1,8 +1,15 @@
 import { motion, useTransform, useViewportScroll } from 'framer-motion';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
-import { getMovieDetail, IMovie } from '../api';
+import {
+	getMovieDetail,
+	getMovieReviews,
+	getMovieSimilar,
+	IGetMovieResult,
+	IGetMovieReviews,
+	IMovie,
+} from '../api';
 import { makeImagePath } from '../utils';
 
 const ModalContainer = styled(motion.div)`
@@ -17,6 +24,27 @@ const ModalContainer = styled(motion.div)`
 	overflow-x: hidden;
 	overflow-y: auto;
 	background-color: ${(props) => props.theme.black.dark};
+
+	article {
+		margin-top: 30px;
+		padding: 0 20px;
+
+		& > h4 {
+			font-size: 18px;
+			font-weight: 500;
+		}
+
+		& > p {
+			padding: 20px 0;
+			text-align: center;
+			color: ${(props) => props.theme.white};
+			opacity: 0.5;
+		}
+
+		&:last-child {
+			padding-bottom: 50px;
+		}
+	}
 `;
 
 const ModalCover = styled.div`
@@ -68,6 +96,7 @@ const ModalOverview = styled.p`
 	width: 70%;
 	color: ${(props) => props.theme.white.light};
 	margin-top: 20px;
+	align-self: start;
 `;
 
 const ModalExtraDesc = styled.div`
@@ -83,10 +112,100 @@ const ModalExtraDesc = styled.div`
 		}
 		&::before {
 			content: attr(data-info) ':';
+			margin-right: 5px;
 		}
 		li {
-			margin-left: 5px;
+			/* margin-left: 5px; */
 			font-size: 0.9em;
+
+			&::after {
+				content: '·';
+				margin: 0 2px;
+			}
+
+			&:last-child::after {
+				display: none;
+			}
+		}
+	}
+`;
+
+const ModalReviews = styled.article``;
+
+const Review = styled.dl`
+	display: flex;
+
+	&:nth-of-type(1) {
+		padding-top: 20px;
+	}
+
+	&:not(:last-child) {
+		margin-bottom: 10px;
+	}
+
+	& > dt {
+		flex: 0 0 50px;
+		width: 50px;
+		height: 50px;
+		border-radius: 100%;
+		overflow: hidden;
+
+		&.string {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: #eee;
+
+			font-size: 20px;
+			font-weight: 500;
+			color: ${(props) => props.theme.black.light};
+			text-transform: uppercase;
+		}
+
+		&.image > img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	}
+
+	& > dd {
+		margin-left: 20px;
+
+		h5 {
+			font-size: 14px;
+			font-weight: 700;
+			margin-bottom: 5px;
+		}
+
+		p {
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			line-clamp: 2;
+			-webkit-line-clamp: 2;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			font-size: 14px;
+			opacity: 0.5;
+		}
+	}
+`;
+
+const ModalSimilar = styled.article`
+	dl {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		grid-auto-rows: max-content;
+		gap: 10px;
+		margin-top: 20px;
+	}
+
+	dt {
+		align-self: center;
+		text-align: center;
+
+		img {
+			width: 100%;
 		}
 	}
 `;
@@ -100,11 +219,22 @@ interface IModalProps {
 }
 
 function DetailModal({ id, title, overview, bgImg, type }: IModalProps) {
-	const { data, isLoading } = useQuery<IMovie>('detail', () =>
-		getMovieDetail(id)
+	const [isLoading, setIsLoading] = useState(false);
+	const { data: detailData, isLoading: detailLoading } = useQuery<IMovie>(
+		'detail',
+		() => getMovieDetail(id)
 	);
 
-	useEffect(() => console.log(data), [data]);
+	const { data: reviewData, isLoading: reviewLoading } =
+		useQuery<IGetMovieReviews>('reviews', () => getMovieReviews(id));
+
+	const { data: similarData, isLoading: similarLoading } =
+		useQuery<IGetMovieResult>('similar', () => getMovieSimilar(id));
+
+	useEffect(() => {
+		setIsLoading(detailLoading && reviewLoading && similarLoading);
+		console.log(similarData);
+	}, [detailLoading, reviewLoading, similarLoading]);
 
 	const { scrollY } = useViewportScroll();
 	const transformScrollY = useTransform(scrollY, (value) => value + 50);
@@ -131,27 +261,105 @@ function DetailModal({ id, title, overview, bgImg, type }: IModalProps) {
 					<ModalCover>
 						<div>
 							<img
-								src={makeImagePath(data ? data.backdrop_path : '', 'w500')}
-								alt={data ? data.original_title : title}
+								src={makeImagePath(
+									detailData ? detailData.backdrop_path : '',
+									'w1280'
+								)}
+								alt={detailData ? detailData.original_title : title}
 							/>
 						</div>
 					</ModalCover>
 					<ModalDesc>
-						<ModalTitle>{data ? data.original_title : title}</ModalTitle>
+						<ModalTitle>
+							{detailData ? detailData.original_title : title}
+						</ModalTitle>
 						<ModalExtraDesc>
+							<ul data-info='Release'>
+								{detailData ? <li>{detailData.release_date}</li> : ''}
+							</ul>
+							<ul data-info='RunTime'>
+								{detailData ? <li>{detailData.runtime} min</li> : ''}
+							</ul>
 							<ul data-info='Genres'>
-								{data
-									? data.genres.map((genre) => (
+								{detailData
+									? detailData.genres.map((genre) => (
 											<li key={genre.id}>{genre.name}</li>
 									  ))
 									: null}
 							</ul>
 							<ul data-info='Language'>
-								{data ? <li>{data.original_language}</li> : ''}
+								{detailData ? <li>{detailData.original_language}</li> : ''}
+							</ul>
+							<ul data-info='Rate'>
+								{detailData && (
+									<li>
+										{detailData.vote_average} (
+										{new Intl.NumberFormat().format(detailData.vote_count)})
+									</li>
+								)}
 							</ul>
 						</ModalExtraDesc>
-						<ModalOverview>{data ? data.overview : overview}</ModalOverview>
+						<ModalOverview>
+							{detailData ? detailData.overview : overview}
+						</ModalOverview>
 					</ModalDesc>
+					{reviewData && (
+						<ModalReviews>
+							<h4>Reviews</h4>
+							{reviewData.total_results === 0 ? (
+								<p>There is no review</p>
+							) : (
+								reviewData.results.slice(0, 5).map((review) => {
+									const { name, username, avatar_path } = review.author_details;
+									const avatar =
+										avatar_path === null
+											? ''
+											: avatar_path.includes('http')
+											? avatar_path.replace('/', '')
+											: `https://secure.gravatar.com/avatar${avatar_path}`;
+
+									return (
+										<Review key={review.id}>
+											<dt className={avatar === '' ? 'string' : 'image'}>
+												{avatar === '' ? (
+													review.author.slice(0, 1)
+												) : (
+													<img src={avatar} alt={review.author} />
+												)}
+											</dt>
+											<dd>
+												<h5>{review.author}</h5>
+												<p>{review.content}</p>
+											</dd>
+										</Review>
+									);
+								})
+							)}
+						</ModalReviews>
+					)}
+					{similarData && (
+						<ModalSimilar>
+							<h4>Similar Contents</h4>
+							{similarData.total_results === 0 ? (
+								<p>There is no content</p>
+							) : (
+								<dl>
+									{similarData.results.map((sm) => (
+										<dt key={sm.id}>
+											{sm.poster_path === null ? (
+												<p>{sm.title}</p>
+											) : (
+												<img
+													src={makeImagePath(sm.poster_path)}
+													alt={sm.title}
+												/>
+											)}
+										</dt>
+									))}
+								</dl>
+							)}
+						</ModalSimilar>
+					)}
 				</>
 			)}
 		</ModalContainer>

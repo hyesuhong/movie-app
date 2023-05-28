@@ -21,6 +21,7 @@ export interface IMovie {
 	video: boolean;
 	vote_average: number;
 	vote_count: number;
+	runtime: number;
 }
 
 export interface IGetMovieResult {
@@ -74,6 +75,31 @@ export interface IGetSearchResult {
 	results: ISearch[];
 	total_results: number;
 	total_pages: number;
+}
+
+export interface IAuthorDetail {
+	name: string;
+	username: string;
+	avatar_path: string;
+	rating?: number;
+}
+
+export interface IReview {
+	author: string;
+	author_details: IAuthorDetail;
+	content: string;
+	created_at: string;
+	id: string;
+	updated_at: string;
+	url: string;
+}
+
+export interface IGetMovieReviews {
+	id: number;
+	page: number;
+	results: IReview[];
+	total_pages: number;
+	total_results: number;
 }
 
 export function getMoviesNowPlaying() {
@@ -145,5 +171,16 @@ export function getMovieDetail(id: number) {
 export function getTvDetail(id: number) {
 	return fetch(`${BASE_PATH}/tv/${id}?api_key=${API_KEY}`).then((response) =>
 		response.json()
+	);
+}
+
+export function getMovieReviews(id: number) {
+	return fetch(`${BASE_PATH}/movie/${id}/reviews?api_key=${API_KEY}`).then(
+		(response) => response.json()
+	);
+}
+export function getMovieSimilar(id: number) {
+	return fetch(`${BASE_PATH}/movie/${id}/similar?api_key=${API_KEY}`).then(
+		(response) => response.json()
 	);
 }
